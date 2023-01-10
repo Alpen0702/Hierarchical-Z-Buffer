@@ -159,10 +159,13 @@
     <ClInclude Include="procedure.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\x64\Release\freeglut.dll">
+    <None Include="freeglut.dll">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="..\x64\Release\Hierarchical Z-Buffer.exe">
+    <None Include="Hierarchical Z-Buffer.exe">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="Hierarchical Z-Buffer.pdb">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
   </ItemGroup>

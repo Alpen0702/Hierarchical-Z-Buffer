@@ -55,7 +55,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\x64\Release\freeglut.dll" />
-    <None Include="..\x64\Release\Hierarchical Z-Buffer.exe" />
+    <None Include="freeglut.dll" />
+    <None Include="Hierarchical Z-Buffer.exe" />
+    <None Include="Hierarchical Z-Buffer.pdb" />
   </ItemGroup>
 </Project>
