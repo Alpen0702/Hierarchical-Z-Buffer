@@ -6,7 +6,7 @@
 using namespace std;
 
 // 线框选色
-const GLubyte colorR = 0, colorG = 255, colorB = 255;
+const GLubyte colorR = 34, colorG = 139, colorB = 34;
 
 double Hfps;
 
@@ -473,7 +473,7 @@ void Hmain()
 	auto t2 = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 	float time = duration / 1000000.0;
-	printf("insert time: %f\n", time);
+	//printf("insert time: %f\n", time);
 
 	t1 = std::chrono::high_resolution_clock::now();
 
@@ -482,7 +482,7 @@ void Hmain()
 	t2 = std::chrono::high_resolution_clock::now();
 	duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 	time = duration / 1000000.0;
-	printf("draw time: %f\n", time);
+	//printf("draw time: %f\n", time);
 
 	// 清空八叉树
 	resetOctNode(octRoot);
@@ -493,7 +493,6 @@ GLuint Htex;
 
 void HZBDisplay()
 {
-
 	// 记录开始时间
 	auto t1 = std::chrono::high_resolution_clock::now();
 
@@ -531,7 +530,7 @@ void HZBDisplay()
 	glutPostRedisplay();
 }
 
-float HierarchialZBuffer(int argc, char** argv)
+void HierarchialZBuffer(int argc, char** argv)
 {
 	glutCreateWindow("Hierarchial Z-Buffer");
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
@@ -550,10 +549,22 @@ float HierarchialZBuffer(int argc, char** argv)
 	octRoot = new OctNode(0, maxS, 0, maxS, 0, maxS);
 
 	glutDisplayFunc(HZBDisplay);
+
+	// 开始绘制
+	auto t1 = std::chrono::high_resolution_clock::now();
+	printf("********      Hierarchial Z-Buffer Begins     ********\n");
 	while (true)
 	{
 		glutMainLoopEvent();
+		frameH++;
+
+		// 关闭窗口时结束绘制
 		if (glutGetWindow() == 0)
-			return Hfps;
+		{
+			auto t2 = std::chrono::high_resolution_clock::now();
+			timeH = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 1000000.0;
+			printf("********       Hierarchial Z-Buffer Ends      ********\n\n");
+			return;
+		}
 	}
 }

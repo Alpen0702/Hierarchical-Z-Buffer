@@ -6,7 +6,7 @@
 using namespace std;
 
 // 线框选色
-const GLubyte colorR = 0, colorG = 255, colorB = 255;
+const GLubyte colorR = 227, colorG = 23, colorB = 13;
 
 double Nfps;
 
@@ -102,7 +102,6 @@ GLuint Ntex;
 
 void NZBDisplay()
 {
-	
 	// 记录开始时间
 	auto t1 = std::chrono::high_resolution_clock::now();
 
@@ -140,7 +139,7 @@ void NZBDisplay()
 	glutPostRedisplay();
 }
 
-float NoneZBuffer(int argc, char** argv)
+void NoneZBuffer(int argc, char** argv)
 {
 	glutCreateWindow("None Z-Buffer");
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
@@ -153,10 +152,21 @@ float NoneZBuffer(int argc, char** argv)
 
 	glutDisplayFunc(NZBDisplay);
 
-	while (true) 
+	// 开始绘制
+	auto t1 = std::chrono::high_resolution_clock::now();
+	printf("********         None Z-Buffer Begins         ********\n");
+	while (true)
 	{
 		glutMainLoopEvent();
-		if (glutGetWindow() == 0) 
-			return Nfps;
+		frameN++;
+
+		// 关闭窗口时结束绘制
+		if (glutGetWindow() == 0)
+		{
+			auto t2 = std::chrono::high_resolution_clock::now();
+			timeN = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 1000000.0;
+			printf("********          None Z-Buffer Ends          ********\n\n");
+			return;
+		}
 	}
 }

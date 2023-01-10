@@ -129,36 +129,34 @@
   <ItemGroup>
     <ClCompile Include="adjustOBJ.cpp" />
     <ClCompile Include="BaselineHierarchialZBuffer.cpp" />
-    <ClCompile Include="glOperation.cpp" />
     <ClCompile Include="HierarchialZBuffer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NoneZBuffer.cpp" />
     <ClCompile Include="readOBJ.cpp" />
-    <ClCompile Include="simp.txt">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="summary.cpp" />
     <ClCompile Include="variables.cpp" />
     <ClCompile Include="ScanlineZBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Object Include="cubes.obj">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </Object>
     <Object Include="house_t.obj">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </Object>
     <Object Include="hut_t.obj">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </Object>
     <Object Include="teapot.obj">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </Object>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="procedure.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="tmp.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

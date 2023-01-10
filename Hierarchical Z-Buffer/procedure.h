@@ -14,6 +14,16 @@ extern int numFaces;
 extern int numNormals;
 extern int numTextures;
 
+extern int frameN;
+extern int frameS;
+extern int frameB;
+extern int frameH;
+
+extern float timeN;
+extern float timeS;
+extern float timeB;
+extern float timeH;
+
 struct Vertex
 {
     float x, y, z;
@@ -44,8 +54,8 @@ extern Texture textures[];
 void readOBJ(string filename);
 void adjustOBJ();
 void rotate();
-void glMain(int argc, char** argv);
-float NoneZBuffer(int argc, char** argv);
-float ScanlineZBuffer(int argc, char** argv);
-float BaselineHierarchialZBuffer(int argc, char** argv);
-float HierarchialZBuffer(int argc, char** argv);
+void NoneZBuffer(int argc, char** argv);
+void ScanlineZBuffer(int argc, char** argv);
+void BaselineHierarchialZBuffer(int argc, char** argv);
+void HierarchialZBuffer(int argc, char** argv);
+void summary();

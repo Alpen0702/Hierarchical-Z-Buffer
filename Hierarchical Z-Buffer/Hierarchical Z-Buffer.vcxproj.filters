@@ -21,9 +21,6 @@
     <ClCompile Include="readOBJ.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="glOperation.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="variables.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -33,9 +30,6 @@
     <ClCompile Include="adjustOBJ.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="simp.txt">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="NoneZBuffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -43,6 +37,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="HierarchialZBuffer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="summary.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,8 +53,5 @@
     <ClInclude Include="procedure.h">
       <Filter>头文件</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="tmp.txt" />
   </ItemGroup>
 </Project>

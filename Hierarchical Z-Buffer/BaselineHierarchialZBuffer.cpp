@@ -6,7 +6,7 @@
 using namespace std;
 
 // 线框选色
-const GLubyte colorR = 0, colorG = 255, colorB = 255;
+const GLubyte colorR = 65, colorG = 105, colorB = 225;
 
 double Bfps;
 
@@ -332,7 +332,6 @@ GLuint Btex;
 
 void BHZBDisplay()
 {
-
 	// 记录开始时间
 	auto t1 = std::chrono::high_resolution_clock::now();
 
@@ -370,7 +369,7 @@ void BHZBDisplay()
 	glutPostRedisplay();
 }
 
-float BaselineHierarchialZBuffer(int argc, char** argv)
+void BaselineHierarchialZBuffer(int argc, char** argv)
 {
 	glutCreateWindow("Baseline Hierarchial Z-Buffer");
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
@@ -385,10 +384,22 @@ float BaselineHierarchialZBuffer(int argc, char** argv)
 	root = buildQuadTree(nullptr, 0, 0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
 
 	glutDisplayFunc(BHZBDisplay);
+
+	// 开始绘制
+	auto t1 = std::chrono::high_resolution_clock::now();
+	printf("******** Baseline Hierarchial Z-Buffer Begins ********\n");
 	while (true)
 	{
 		glutMainLoopEvent();
+		frameB++;
+
+		// 关闭窗口时结束绘制
 		if (glutGetWindow() == 0)
-			return Bfps;
+		{
+			auto t2 = std::chrono::high_resolution_clock::now();
+			timeB = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 1000000.0;
+			printf("********  Baseline Hierarchial Z-Buffer Ends  ********\n\n");
+			return;
+		}
 	}
 }

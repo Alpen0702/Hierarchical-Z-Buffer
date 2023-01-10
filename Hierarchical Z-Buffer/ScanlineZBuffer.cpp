@@ -6,7 +6,7 @@
 using namespace std;
 
 // 线框选色
-const GLubyte colorR = 255, colorG = 0, colorB = 255;
+const GLubyte colorR = 255, colorG = 128, colorB = 0;
 
 double Sfps;
 
@@ -500,7 +500,7 @@ void SZBDisplay()
 	glutPostRedisplay();
 }
 
-float ScanlineZBuffer(int argc, char** argv)
+void ScanlineZBuffer(int argc, char** argv)
 {
 	glutCreateWindow("Scanline Z-Buffer");
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
@@ -513,10 +513,21 @@ float ScanlineZBuffer(int argc, char** argv)
 
 	glutDisplayFunc(SZBDisplay);
 
+	// 开始绘制
+	auto t1 = std::chrono::high_resolution_clock::now();
+	printf("********       Scanline Z-Buffer Begins       ********\n");
 	while (true)
 	{
 		glutMainLoopEvent();
+		frameS++;
+
+		// 关闭窗口时结束绘制
 		if (glutGetWindow() == 0)
-			return Sfps;
+		{
+			auto t2 = std::chrono::high_resolution_clock::now();
+			timeS = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 1000000.0;
+			printf("********        Scanline Z-Buffer Ends        ********\n\n");
+			return;
+		}
 	}
 }
