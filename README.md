@@ -30,7 +30,7 @@
 此外，在深度消隐的每一帧，消隐函数都会调用`adjustOBJ.cpp`中的`rotate`函数，将模型进行旋转。注意，视点始终没有改动。<br><br>
 ## 使用说明
 本项目是在Windows11环境下用Visual Studio 2022开发的，主要调用的外部库仅为GL/freeglut.h。<br><br>
-下载项目zip文件并解压后，用Visual Studio运行`Hierarchical Z-Buffer.sln`即可进行调试和编译。如果运行失败，请联系我获得支持；你也可以在`Hierarchical Z-Buffer\x64\Release`目录下打开`Hierarchical Z-Buffer.exe`来查看运行项目exe，无需编译。**但请确保项目使用的OBJ格式文件处于原位不要移动。**<br><br>
+下载项目zip文件并解压后，用Visual Studio运行`Hierarchical Z-Buffer.sln`即可进行调试和编译。如果运行失败，请联系我获得支持；你也可以在`Hierarchical Z-Buffer`目录下打开`Hierarchical Z-Buffer.exe`来查看运行项目exe，无需编译。**但请确保项目使用的OBJ格式文件处于原位不要移动。**<br><br>
 在开始运行前，你可以找到`main.cpp`中的`// 选择模型`处，在这里指定不同的路径以选择不同的模型来展示。提供的OBJ模型包括：<br><br>
 - cubes.obj     八个缺面的立方体，含64个顶点，80个面片
 - teapot.obj    犹他茶壶，含4658个顶点，9216个面片
