@@ -13,8 +13,8 @@ int main(int argc, char** argv)
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
     glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    //printf("********NFPS: %f********\n", NoneZBuffer(argc, argv));
-    //printf("********SFPS: %f********\n", ScanlineZBuffer(argc, argv));
+    printf("********NFPS: %f********\n", NoneZBuffer(argc, argv));
+    printf("********SFPS: %f********\n", ScanlineZBuffer(argc, argv));
     printf("********BFPS: %f********\n", BaselineHierarchialZBuffer(argc, argv));
     //printf("********HFPS: %f********\n", HierarchialZBuffer(argc, argv));
     //glMain(argc, argv);

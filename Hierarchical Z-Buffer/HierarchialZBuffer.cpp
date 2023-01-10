@@ -27,6 +27,7 @@ struct QuadNode
 // nodes是非叶结点，leaves是叶子结点
 vector<QuadNode*> quadNodes;
 QuadNode* leaves[WINDOW_WIDTH][WINDOW_HEIGHT];
+QuadNode* quadRoot;
 
 // 建立四叉树
 QuadNode* buildQuadTree(QuadNode* father, int level, int l, int r, int d, int u)
@@ -52,6 +53,15 @@ QuadNode* buildQuadTree(QuadNode* father, int level, int l, int r, int d, int u)
 	quadNode->children.push_back(buildQuadTree(quadNode, level + 1, lrmid, r, d, dumid));
 	quadNode->children.push_back(buildQuadTree(quadNode, level + 1, lrmid, r, dumid, u));
 	return quadNode;
+}
+
+// 重置四叉树的深度
+void resetQuadTree(QuadNode* father)
+{
+	father->depth = -1e5;
+	for (QuadNode* child : father->children)
+		if (child)
+			resetQuadTree(child);
 }
 
 // 定义三角形面片的边结构
@@ -224,6 +234,8 @@ struct OctNode
 	OctNode(float xmin, float xmax, float ymin, float ymax, float zmin, float zmax) :xmin(xmin), xmax(xmax), ymin(ymin), ymax(ymax), zmin(zmin), zmax(zmax) {}
 };
 
+OctNode* octRoot;
+
 // 相互调用，提前声明
 void splitOctNode(OctNode* octNode);
 
@@ -318,13 +330,23 @@ void insertTriangleToOctNode(OctNode* octNode, int triangleID)
 	{
 		octNode->triangleIDs.push_back(triangleID);
 		// 如果本结点内三角形太多，就要分割该结点；但若本结点已经分得很细了，就不应该继续分下去了
-		if (octNode->triangleIDs.size() > MAX_OCT_TRIANGLES && octNode->xmax - octNode->xmin > .001)
+		if (octNode->triangleIDs.size() > MAX_OCT_TRIANGLES && octNode->xmax - octNode->xmin > 10)
 			splitOctNode(octNode);
 	}
 	else
+	{
+		auto t1 = std::chrono::high_resolution_clock::now();
+
 		// 下放该三角形
 		for (int i = 0; i < 8; i++)
 			insertTriangleToOctNode(octNode->children[i], triangleID);
+
+		auto t2 = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+		float time = duration / 1000000.0;
+		//if (octNode->xmin == 0 && octNode->xmax == 720)
+			//printf("insert this time: %f\n", time);
+	}
 }
 
 // 分割八叉树结点
@@ -421,18 +443,18 @@ int drawOctNode(OctNode* octNode, QuadNode* quadNode)
 }
 
 // 删除八叉树结点
-void deleteOctNode(OctNode* octNode)
+void resetOctNode(OctNode* octNode)
 {
 	if (octNode->children[0])
 		for (OctNode* child : octNode->children)
-			deleteOctNode(child);
-	delete(octNode);
+			resetOctNode(child);
+	octNode->triangleIDs.clear();
 }
 
 void Hmain()
 {
-	// 建立四叉树
-	QuadNode* quadRoot = buildQuadTree(nullptr, 0, 0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
+	// 重置四叉树的深度
+	resetQuadTree(quadRoot);
 
 	// 填充背景色
 	for (int y = WINDOW_HEIGHT - 1; y >= 0; y--)
@@ -443,25 +465,27 @@ void Hmain()
 			Hpixels[y][x * 3 + 2] = 255;
 		}
 
+	auto t1 = std::chrono::high_resolution_clock::now();
+
 	// 将三角形加入到八叉树中
-	float maxS = min(WINDOW_HEIGHT, WINDOW_WIDTH);
-	OctNode* octRoot = new OctNode(0, maxS, 0, maxS, 0, maxS);
 	for (int i = 1; i <= numFaces; i++)
 		insertTriangleToOctNode(octRoot, i);
+	auto t2 = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	float time = duration / 1000000.0;
+	printf("insert time: %f\n", time);
+
+	t1 = std::chrono::high_resolution_clock::now();
 
 	// 遍历八叉树空间
 	drawOctNode(octRoot, quadRoot);
+	t2 = std::chrono::high_resolution_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	time = duration / 1000000.0;
+	printf("draw time: %f\n", time);
 
-	// 删除四叉树
-	for (QuadNode* quadNode : quadNodes)
-		delete quadNode;
-	quadNodes.clear();
-	for (int x = 0; x < WINDOW_WIDTH; x++)
-		for (int y = 0; y < WINDOW_HEIGHT; y++)
-			delete leaves[x][y];
-	
-	// 删除八叉树
-	deleteOctNode(octRoot);
+	// 清空八叉树
+	resetOctNode(octRoot);
 }
 
 // 这是一个纹理
@@ -517,6 +541,13 @@ float HierarchialZBuffer(int argc, char** argv)
 	glBindTexture(GL_TEXTURE_2D, Htex);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glEnable(GL_TEXTURE_2D);
+
+	// 建立四叉树
+	quadRoot = buildQuadTree(nullptr, 0, 0, WINDOW_WIDTH, 0, WINDOW_HEIGHT);
+
+	// 建立八叉树
+	float maxS = min(WINDOW_HEIGHT, WINDOW_WIDTH);
+	octRoot = new OctNode(0, maxS, 0, maxS, 0, maxS);
 
 	glutDisplayFunc(HZBDisplay);
 	while (true)

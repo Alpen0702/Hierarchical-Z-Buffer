@@ -3,7 +3,6 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
-#include <set>
 using namespace std;
 
 // 线框选色
@@ -325,7 +324,7 @@ void Bmain()
 			noRas++;
 	}
 	// 探索：有多少比例的面片因为BaselineHierarchialZBuffer算法而免于被绘制？
-	printf("No Rasterize Rate: %f\n", float(noRas) / numFaces);
+	//printf("No Rasterize Rate: %f\n", float(noRas) / numFaces);
 }
 
 // 这是一个纹理
