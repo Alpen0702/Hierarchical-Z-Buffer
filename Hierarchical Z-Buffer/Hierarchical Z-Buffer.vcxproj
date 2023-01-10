@@ -158,6 +158,14 @@
   <ItemGroup>
     <ClInclude Include="procedure.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\x64\Release\freeglut.dll">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\x64\Release\Hierarchical Z-Buffer.exe">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

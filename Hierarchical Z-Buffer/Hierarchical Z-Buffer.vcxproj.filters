@@ -54,4 +54,8 @@
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\x64\Release\freeglut.dll" />
+    <None Include="..\x64\Release\Hierarchical Z-Buffer.exe" />
+  </ItemGroup>
 </Project>

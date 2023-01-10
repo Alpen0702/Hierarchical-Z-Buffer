@@ -30,7 +30,7 @@
 此外，在深度消隐的每一帧，消隐函数都会调用`adjustOBJ.cpp`中的`rotate`函数，将模型进行旋转。注意，视点始终没有改动。<br><br>
 ## 使用说明
 本项目是在Windows11环境下用Visual Studio 2022开发的，主要调用的外部库仅为GL/freeglut.h。<br><br>
-下载项目zip文件并解压后，用Visual Studio运行`Hierarchical Z-Buffer.sln`即可进行调试和编译。如果运行失败，请联系我获得支持；你也可以在根目录下直接打开`Hierarchical Z-Buffer.exe`来查看项目运行结果，无需自行编译。**但请确保项目使用的OBJ格式文件处于原位不要移动。**<br><br>
+下载项目zip文件并解压后，用Visual Studio运行`Hierarchical Z-Buffer.sln`即可进行调试和编译。如果运行失败，请联系我获得支持；你也可以在`Hierarchical Z-Buffer\x64\Release`目录下打开`Hierarchical Z-Buffer.exe`来查看运行项目exe，无需编译。**但请确保项目使用的OBJ格式文件处于原位不要移动。**<br><br>
 在开始运行前，你可以找到`main.cpp`中的`// 选择模型`处，在这里指定不同的路径以选择不同的模型来展示。提供的OBJ模型包括：<br><br>
 - cubes.obj     八个缺面的立方体，含64个顶点，80个面片
 - teapot.obj    犹他茶壶，含4658个顶点，9216个面片
@@ -43,17 +43,16 @@ v 2 2 2
 v 3 3 3
 f 1/0/0 2/0/0 3/0/0
 ```
-<br>
 符合这个格式就行。项目运行时，首先弹出红色线框显示的"None Z-Buffer"窗口，同时在命令行界面显示绘制的fps。你可以在运行一段时间后关闭图形窗口，**注意，是关闭图形窗口，而非关闭命令行界面。**<br><br>
-![演示](https://github.com/Alpen0702/CADProject/blob/master/%E6%BC%94%E7%A4%BA.gif)<br><br>
+<img decoding="async" src="https://github.com/Alpen0702/Hierarchical-Z-Buffer/blob/master/NZBshow.png" width="50%"><br>
 关闭图形窗口后，项目会自动切换到下一个子程序，弹出新的图形窗口，依次是黄色线框显示的"Scanline Z-Buffer"、蓝色线框显示的"Baseline Hierarchial Z-Buffer"和绿色线框显示的"Hierarchial Z-Buffer"。关闭最后一个图形窗口后，命令行界面将会生成一份总结报告，可以参阅不同消隐函数的运行时间、渲染帧数和fps等数据。<br><br>
 ## 讨论与反思
 运行过我的代码就会知道为什么我在summary里面没有把加速比写出来了（其实fps都算出来写在那儿了，加速比一目了然），因为在这几个OBJ模型中，完整和简单的层次z-buffer算法都没比扫描线z-buffer算法好到哪儿去。<br><br>
 完整的层次z-buffer尤其慢。我在分步debug的时候测试了它的耗时，发现分割八叉树没有我想得那么慢，但是`insertTriangleToOctNode(OctNode* octNode, int triangleID)`和`drawOctNode(OctNode* octNode, QuadNode* quadNode)`，也就是将三角形插入到八叉树结点中、以及绘制八叉树结点中的面片这两个过程特别耗时。在使用`hut_t.obj`时，每一帧中这两个过程分别用时1.5s和0.3s，这个速度是完全不能接受的。造成这个结果，我认为一方面是我的代码可能还有地方可以改进，另一方面是八叉树的递归操作实在太复杂了，如果没有硬件加速分布式运算，而是只用CPU去跑单线程，那真的会是慢慢慢（如果别人这样写很快那当我没说）。<br><br>
 至于我的简单层次z-buffer，其实效果还可以，基本上不会比扫描线z-buffer的结果差，多面片的情况下有时是要略好于扫描线z-buffer的，不过也没有达到我对这个算法的预期。看来看去，我觉得可能还是这个算法的场景太理想了。现实中我用的四个OBJ模型其实就算面片多，也没有很多次的重叠。就以犹他茶壶为例吧，虽然它有近一万个面片，但实际上每个面片都相当小，而且大部分是围成一个圆柱形形成茶壶的侧面的，而茶壶的侧面基本上一个面片只会遮挡住它后面对侧的另一个面片，相当于就算使用了四叉树结构，最理想的情况下也只是节省一半的渲染时间而已，但面片和四叉树结点的相互作用和更新又需要额外的时间，所以总体下来就不一定划算了。<br><br>
 关于使用层次z-buffer而免于渲染的面片占全部面片的比例，我在`BaselineHierarchialZBuffer.cpp`中探索过，详情可以参考`Bmain()`中的代码注释。当设置四叉树极限深度为7层，分辨率设置为720\*720时，大概只有不到20%的面片可以因为深度大于四叉树结点而免于渲染。事实上，如果将分辨率调小到72\*72，在渲染`hut_t.obj`的时候简单的层次z-buffer就可以比扫描线z-buffer显著优越了，而且能有超过40%的面片免于被渲染（如下图所示）。<br><br>
-![演示](https://github.com/Alpen0702/CADProject/blob/master/%E6%BC%94%E7%A4%BA.gif)<br><br>
+![compare](https://github.com/Alpen0702/Hierarchical-Z-Buffer/blob/master/compare.png)<br><br>
 这个项目也给我带来了一些收获。加深对各种z-buffer的理解就不说了，主要是让我体会到做渲染对细节真的要求很高。之前听说一些工程师为了速度快一点就自己手写库、位运算balabala的，还不以为意，觉得这样千辛万苦搞来搞去，速度也就提升一点点，没什么必要。因为我之前做OI的时候，基本不会在意常数级别的优化，0.05s Accepted 和 0.03s Accepted 没什么区别。这次改代码的时候我才意识到，逐帧渲染就是会把这些小如0.02s的差距放大：0.05s一帧就是20fps，但0.03s一帧就能有33fps。所以常数级别的优化也会相当重要。在优化`ScanlineZBuffer.cpp`和`BaselineHierarchialZBuffer.cpp`的时候，我就是通过将建树递归的层数减少一层，或是将vector、set等容器改为数组，就提升了一倍的fps。所以日后做渲染的时候还是要注意一些细节的优化，把时间能省尽省。<br><br>
-不过，这个项目做到这里还是有一些遗憾。主要是没时间改完整版的层次z-buffer了——**主要是我忘记应用几何造型基础的ddl是今天了OMG**我本来以为是1.13交应用几何造型基础的然后想把z-buffer今天解决然后剩两天火速做一下那门课的十页读书报告，现在看来z-buffer是绝对没时间再改了，文档也没时间再细写了——其实细改一下，我觉得完整版的层次z-buffer至少应该能达到简单版的水平。以后有时间再说吧（挖坑<br><br>
+不过，这个项目做到这里还是有一些遗憾。渲染的质量做得不太好，横线会画得比竖线要虚（因为每行都只渲染一个像素）。主要是没时间改完整版的层次z-buffer了——**主要是我忘记应用几何造型基础的ddl是今天了OMG**我本来以为是1.13交应用几何造型基础的然后想把z-buffer今天解决然后剩两天火速做一下那门课的十页读书报告，现在看来z-buffer是绝对没时间再改了，文档也没时间再细写了——其实细改一下，我觉得完整版的层次z-buffer至少应该能达到简单版的水平。以后有时间再说吧（挖坑<br><br>
 ## 联系作者
 代码几乎全是自己照着冯老师的ppt手写的，没用什么乱七八糟的库，连Reference都没怎么参考（所以才写得那么烂吧QAQ），不过要特别感谢ChatGPT在debug中对我的帮助。有任何问题，欢迎通过llzju@zju.edu.cn联系我。<br><br>
